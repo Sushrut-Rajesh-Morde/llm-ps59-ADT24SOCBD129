@@ -17,7 +17,13 @@ A small Streamlit project that extracts appointment preferences, shows available
    python -m streamlit run app.py
    ```
 
-4. For Gemini extraction, enter a Gemini API key in the sidebar or set `GEMINI_API_KEY` before starting the app. Without a key, the app switches to its local demo parser; use the labeled request format shown on screen. Gemini errors are reported rather than silently switching modes.
+4. Create a Gemini API key in [Google AI Studio](https://aistudio.google.com/apikey), then put it in the local `.env` file:
+
+   ```dotenv
+   GEMINI_API_KEY=your_key_here
+   ```
+
+   The `.env` file is excluded from Git. Alternatively, enter your key in the app sidebar. Without a key, the app uses its local demo parser. Gemini extraction uses a zero thinking budget for minimal model thinking; Gemini errors are reported rather than silently switching modes.
 
 The app creates `slots.csv` with a weekday schedule on first run, and adds a fresh schedule when no future free slots remain. Booking updates the selected row and stores a confirmation ID. Keep a backup of the CSV if you want to preserve demo bookings.
 

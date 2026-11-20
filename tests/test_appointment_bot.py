@@ -1,8 +1,10 @@
 import csv
+import json
 import tempfile
 import unittest
 from datetime import date
 from pathlib import Path
+from unittest.mock import patch
 
 from appointment_bot import (
     AppointmentError,
@@ -49,6 +51,22 @@ class AppointmentBotTests(unittest.TestCase):
         self.assertEqual(result["preferred_date"], "2026-11-24")
         self.assertEqual(result["preferred_time"], "10:30")
         self.assertEqual(result["phone"], "9876543210")
+
+    @patch("google.genai.Client")
+    def test_gemini_request_uses_zero_thinking_budget(self, client_factory):
+        response = client_factory.return_value.models.generate_content
+        response.return_value.text = json.dumps(
+            {
+                "name": "Alex Morgan",
+                "department": "Cardiology",
+                "preferred_date": "2026-11-23",
+                "preferred_time": "09:00",
+                "phone": "",
+            }
+        )
+        extract_appointment_details("Book me an appointment", api_key="test-key")
+        config = response.call_args.kwargs["config"]
+        self.assertEqual(config.thinking_config.thinking_budget, 0)
 
     def test_schedule_creation_is_idempotent(self):
         ensure_future_slots(self.csv_path, today=date(2026, 11, 20))

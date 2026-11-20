@@ -1,7 +1,9 @@
 import os
 from datetime import date, timedelta
+from pathlib import Path
 
 import streamlit as st
+from dotenv import load_dotenv
 
 from appointment_bot import (
     DEPARTMENTS,
@@ -14,6 +16,7 @@ from appointment_bot import (
 
 
 STORE_PATH = os.path.join(os.path.dirname(__file__), "slots.csv")
+load_dotenv(Path(__file__).with_name(".env"))
 
 st.set_page_config(page_title="Hospital Appointment Bot", page_icon="🏥")
 st.title("Hospital Appointment Bot")
